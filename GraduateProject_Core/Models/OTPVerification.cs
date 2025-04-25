@@ -19,9 +19,7 @@ namespace GraduateProject_Core.Models
         [StringLength(10)]
         public string Code { get; set; }
 
-        [Required]
-        [StringLength(10)]
-        public string Type { get; set; }
+      
 
         public bool IsUsed { get; set; }
 
@@ -29,6 +27,12 @@ namespace GraduateProject_Core.Models
         public DateTime ExpiresAt { get; set; }
 
         public Users User { get; set; }
+
+
+        
+  
+       
+
 
 
     }

@@ -20,12 +20,17 @@ namespace GraduateProject_Infrastructure.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         //// Constructor for EF CLI migrations (design-time)
-        public AppDbContext() : base(
-            new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer("Server=hospital-server.database.windows.net;Database=HospitalDB;User Id=adminuser;Password=Amer2002*;")
-                .Options)
-        {
-        }
+        //public AppDbContext() : base(
+        //    new DbContextOptionsBuilder<AppDbContext>()
+        //        .UseSqlServer("Server=hospital-server.database.windows.net;Database=HospitalDB;User Id=adminuser;Password=Amer2002*;")
+        //        .Options)
+        //{
+        //}
+
+      
+
+     
+
 
         public DbSet<Users> Users { get; set; }
   
@@ -54,8 +59,40 @@ namespace GraduateProject_Infrastructure.Data
         public DbSet<LeaveStatus> LeaveStatuses { get; set; }
         public DbSet<ReportFile> ReportFiles { get; set; }
 
+        public DbSet<SendOTPModel> SendOTPModel { get; set; }
+        public DbSet<ResetPasswordWithOTPModel> ResetPasswordWithOTPModel { get; set; }
+        public DbSet<ChangePasswordModel> ChangePasswordModel { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Patient>()
+                .HasOne(p => p.User)
+                .WithOne(u => u.Patient)
+                .HasForeignKey<Patient>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Doctor>()
+                .HasOne(d => d.User)
+                .WithOne(u => u.Doctor)
+                .HasForeignKey<Doctor>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Supervisor>()
+                .HasOne(s => s.User)
+                .WithOne(u => u.Supervisor)
+                .HasForeignKey<Supervisor>(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Admin>()
+                .HasOne(a => a.User)
+                .WithOne(u => u.Admin)
+                .HasForeignKey<Admin>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<DoctorSpecialization>()
                 .HasKey(ds => new { ds.DoctorID, ds.SpecializationID });
 
@@ -69,7 +106,11 @@ namespace GraduateProject_Infrastructure.Data
                 .WithMany(s => s.DoctorSpecializations)
                 .HasForeignKey(ds => ds.SpecializationID);
 
-            base.OnModelCreating(modelBuilder);
+       
+
+            
+
+
         }
 
     }

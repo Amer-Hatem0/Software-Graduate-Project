@@ -160,3 +160,4 @@ C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_API\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_API\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_API\bin\Debug\net8.0\appsettings.json
+C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_API\obj\Debug\net8.0\GraduateProject_API.sourcelink.json

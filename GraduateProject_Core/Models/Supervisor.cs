@@ -12,7 +12,7 @@ namespace GraduateProject_Core.Models
         [Key]
         public int SupervisorID { get; set; }
         public int UserId { get; set; }
-        public string Department { get; set; }
+        public string? Department { get; set; }
 
         public Users User { get; set; }
 

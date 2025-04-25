@@ -12,21 +12,18 @@ namespace GraduateProject_API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // تحميل إعدادات appsettings + appsettings.Development إذا موجود
             builder.Configuration
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
-            // الطباعة للتأكد
             Console.WriteLine("Loaded JWT Key: " + builder.Configuration["JWT:Key"]);
 
-            // إضافة الخدمات
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -38,12 +35,12 @@ namespace GraduateProject_API
             {
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
             })
-                .AddEntityFrameworkStores<AppDbContext>();
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
-            // إضافة مصادقة JWT
             builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
@@ -59,13 +56,13 @@ namespace GraduateProject_API
                     };
                 });
 
-            // ضبط اللغة الافتراضية
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -73,11 +70,42 @@ namespace GraduateProject_API
             }
 
             app.UseHttpsRedirection();
-
-            app.UseAuthentication(); // 🔐 يجب أن يكون قبل Authorization
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Users>>();
+
+                string[] roles = { "Admin", "Doctor", "Supervisor", "Patient" };
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                        await roleManager.CreateAsync(new IdentityRole<int>(role));
+                }
+
+                var adminEmail = "admin@hospital.com";
+                var adminUser = await userManager.FindByEmailAsync(adminEmail);
+                if (adminUser == null)
+                {
+                    var user = new Users
+                    {
+                        UserName = "admin",
+                        Email = adminEmail,
+                        FullName = "System Admin",
+                        Gender = "Male",  
+                        DateOfBirth = new DateTime(1990, 1, 1),
+                        Age = 34,
+                        EmailConfirmed = true
+                    };
+
+                    var result = await userManager.CreateAsync(user, "Admin@123");
+                    if (result.Succeeded)
+                        await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
 
             app.Run();
         }

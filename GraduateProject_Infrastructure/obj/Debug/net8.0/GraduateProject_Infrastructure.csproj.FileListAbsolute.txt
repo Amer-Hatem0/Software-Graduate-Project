@@ -15,3 +15,4 @@ C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_Infrastructure\obj\Debug\net8.0\ref\GraduateProject_Infrastructure.dll
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_Infrastructure\bin\Debug\net8.0\GraduateProject_Infrastructure.runtimeconfig.json
 C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_Infrastructure\obj\Debug\net8.0\GraduateProject_Infrastructure.genruntimeconfig.cache
+C:\Users\amrh3\OneDrive\Desktop\Univ\Software Graduate Project I\GraduateProject_Infrastructure\obj\Debug\net8.0\GraduateProject_Infrastructure.sourcelink.json

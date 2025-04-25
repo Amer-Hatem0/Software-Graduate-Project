@@ -16,9 +16,8 @@ namespace GraduateProject_Core.Models
         [Required]
         public int UserId { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Specialization { get; set; }
+       
+        public string? Specialization { get; set; }
 
         public float PerformanceScore { get; set; }
         public int Workload { get; set; }

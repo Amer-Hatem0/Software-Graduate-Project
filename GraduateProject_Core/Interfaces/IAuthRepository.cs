@@ -13,6 +13,9 @@ namespace Asp9_Project_Core.Interfaces
 
         Task<string> RegisterAsync(Users user, string password);
         Task<string> LoginAsync(string username, string password);
-        Task<string> ChangePasswordAsync(string email, string oldPassword, string newPassword);
+        Task<string> ChangePasswordAsync(string userId, string oldPassword, string newPassword);
+        Task<string> SendOTPAsync(string username);
+        Task<string> ResetPasswordWithOTPAsync(string username, string otp, string newPassword);
+
     }
 }
