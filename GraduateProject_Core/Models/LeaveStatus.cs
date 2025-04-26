@@ -15,8 +15,13 @@ namespace GraduateProject_Core.Models
         [Required]
         [StringLength(50)]
         public string StatusName { get; set; }
+        public string? Status { get; set; }
 
         public ICollection<LeaveRequest> LeaveRequests { get; set; }
 
+        public static implicit operator LeaveStatus(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

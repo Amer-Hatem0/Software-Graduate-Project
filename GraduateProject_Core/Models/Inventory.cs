@@ -22,6 +22,13 @@ namespace GraduateProject_Core.Models
         [Range(0, int.MaxValue)]
         public int MinThreshold { get; set; }
 
+        public string Notes { get; set; }
+        
+        public string Status { get; set; }
+
+
+
+
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
 

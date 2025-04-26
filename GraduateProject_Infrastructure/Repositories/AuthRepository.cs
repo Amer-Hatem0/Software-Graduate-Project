@@ -29,36 +29,7 @@ namespace GraduateProject_Infrastructure.Repositories
             this.configuration = configuration;
             this.appDbContext = appDbContext;
         }
-        //public async Task<string> RegisterAsync(Users user, string password)
-        //{
-        //    var result = await userManager.CreateAsync(user, password);
-        //    if (result.Succeeded)
-        //    {
-        //        return "User Registed successfully ";
-        //    }
-        //    var err = result.Errors.Select(result => result.Description).ToList();
-        //    return string.Join(",", err);
-
-        //}
-
-        //public async Task<string> RegisterAsync(Users user, string password)
-        //{
-        //    var result = await userManager.CreateAsync(user, password);
-        //    if (!result.Succeeded)
-        //        return string.Join(",", result.Errors.Select(e => e.Description));
-
-        //    await userManager.AddToRoleAsync(user, "Patient");
-
-        //    var patientEntity = new Patient
-        //    {
-        //        UserId = user.Id
-        //    };
-        //    appDbContext.Patients.Add(patientEntity);
-        //    await appDbContext.SaveChangesAsync();
-
-        //    return "Patient registered successfully";
-        //}
-
+        
         public async Task<string> RegisterAsync(Users user, string password)
         {
             var result = await userManager.CreateAsync(user, password);
@@ -120,31 +91,64 @@ namespace GraduateProject_Infrastructure.Repositories
             }
         }
 
-        private string GenerateToken(Users users)
+        //    private string GenerateToken(Users users)
+        //    {
+        //        var claims = new[]
+        //        {
+        //    new Claim(JwtRegisteredClaimNames.Sub, users.UserName),
+        //    new Claim(ClaimTypes.NameIdentifier, users.Id.ToString())
+        //};
+
+        //        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
+
+        //        var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        //        var token = new JwtSecurityToken(
+        //            configuration["JWT:Issuer"],
+        //            configuration["JWT:Audience"],
+        //            claims,
+        //            expires: DateTime.Now.AddMinutes(30),
+        //            signingCredentials: cred
+        //        );
+
+
+        //        return new JwtSecurityTokenHandler().WriteToken(token);
+        //    }
+        private string GenerateToken(Users user)
         {
-            var claims = new[]
-            {
-        new Claim(JwtRegisteredClaimNames.Sub, users.UserName),
-        new Claim(ClaimTypes.NameIdentifier, users.Id.ToString())
+            var claims = new List<Claim>
+    {
+        // التأكيد على إضافة هذه الـ Claims الأساسية
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim("userid", user.Id.ToString()), // إضافة claim مخصصة للتأكد
+        new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email)
     };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
-          
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            // إضافة أدوار المستخدم إذا كانت موجودة
+            var roles = userManager.GetRolesAsync(user).Result;
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                configuration["JWT:Key"] ?? throw new InvalidOperationException("JWT Key is missing")));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                configuration["JWT:Issuer"],
-                configuration["JWT:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: cred
+                issuer: configuration["JWT:Issuer"],
+                audience: configuration["JWT:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: creds
             );
-            
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
         public async Task<string> SendOTPAsync(string username)
         {
             var user = await userManager.FindByNameAsync(username);
@@ -165,8 +169,7 @@ namespace GraduateProject_Infrastructure.Repositories
             appDbContext.OTPVerifications.Add(otpEntity);
             await appDbContext.SaveChangesAsync();
 
-            // هنا ممكن تطبع الرمز أو تبعته على الإيميل الحقيقي
-            return $"OTP code sent: {otp}";
+             return $"OTP code sent: {otp}";
         }
 
         public async Task<string> ResetPasswordWithOTPAsync(string username, string otp, string newPassword)

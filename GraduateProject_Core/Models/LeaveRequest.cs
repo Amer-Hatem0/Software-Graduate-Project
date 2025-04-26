@@ -27,7 +27,7 @@ namespace GraduateProject_Core.Models
         [StringLength(300)]
         public string Reason { get; set; }
 
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? SubmittedAt { get; set; } = DateTime.UtcNow;
 
         public Doctor Doctor { get; set; }
         public LeaveStatus Status { get; set; }
