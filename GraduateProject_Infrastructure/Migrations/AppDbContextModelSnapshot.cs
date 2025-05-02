@@ -164,6 +164,9 @@ namespace GraduateProject_Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentID"));
 
+                    b.Property<int?>("AppointmentStatusStatusID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -177,16 +180,34 @@ namespace GraduateProject_Infrastructure.Migrations
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("RequestedRescheduleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RescheduleReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RescheduleStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("StatusID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WaitingMinutes")
                         .HasColumnType("int");
 
                     b.HasKey("AppointmentID");
 
+                    b.HasIndex("AppointmentStatusStatusID");
+
                     b.HasIndex("DoctorID");
 
                     b.HasIndex("PatientID");
-
-                    b.HasIndex("StatusID");
 
                     b.ToTable("Appointments");
                 });
@@ -414,11 +435,19 @@ namespace GraduateProject_Infrastructure.Migrations
                     b.Property<int>("DoctorID")
                         .HasColumnType("int");
 
+                    b.Property<bool>("FollowUpNeeded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Treatment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("VisitDate")
@@ -507,6 +536,14 @@ namespace GraduateProject_Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientID"));
 
+                    b.Property<string>("ComplianceLevel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -516,15 +553,78 @@ namespace GraduateProject_Infrastructure.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StatusID")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("PatientID");
 
+                    b.HasIndex("StatusID");
+
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("GraduateProject_Core.Models.PatientReport", b =>
+                {
+                    b.Property<int>("PatientID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientID"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PatientID");
+
+                    b.ToTable("PatientReports");
+                });
+
+            modelBuilder.Entity("GraduateProject_Core.Models.Procedure", b =>
+                {
+                    b.Property<int>("ProcedureID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProcedureID"));
+
+                    b.Property<DateTime>("DatePerformed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProcedureType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ProcedureID");
+
+                    b.ToTable("Procedures");
                 });
 
             modelBuilder.Entity("GraduateProject_Core.Models.ReportFile", b =>
@@ -894,6 +994,10 @@ namespace GraduateProject_Infrastructure.Migrations
 
             modelBuilder.Entity("GraduateProject_Core.Models.Appointment", b =>
                 {
+                    b.HasOne("GraduateProject_Core.Models.AppointmentStatus", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("AppointmentStatusStatusID");
+
                     b.HasOne("GraduateProject_Core.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
                         .HasForeignKey("DoctorID")
@@ -906,17 +1010,9 @@ namespace GraduateProject_Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GraduateProject_Core.Models.AppointmentStatus", "Status")
-                        .WithMany("Appointments")
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("GraduateProject_Core.Models.Doctor", b =>
@@ -1030,11 +1126,19 @@ namespace GraduateProject_Infrastructure.Migrations
 
             modelBuilder.Entity("GraduateProject_Core.Models.Patient", b =>
                 {
+                    b.HasOne("GraduateProject_Core.Models.AppointmentStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GraduateProject_Core.Models.Users", "User")
                         .WithOne("Patient")
                         .HasForeignKey("GraduateProject_Core.Models.Patient", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Status");
 
                     b.Navigation("User");
                 });

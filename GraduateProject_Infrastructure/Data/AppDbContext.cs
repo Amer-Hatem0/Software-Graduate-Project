@@ -27,11 +27,12 @@ namespace GraduateProject_Infrastructure.Data
         //{
         //}
 
-      
-
-     
 
 
+
+
+        public DbSet<Procedure> Procedures { get; set; } 
+        public DbSet<PatientReport> PatientReports { get; set; }
         public DbSet<Users> Users { get; set; }
   
         public DbSet<Admin> Admins { get; set; }

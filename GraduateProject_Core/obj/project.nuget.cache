@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "0mDnOAwJP2+S1UeiGd1lVz30+4W3Jz0SZuugALJcHq8MGa9zR4Js83InmZz63OmVEgWroSHCykX9fezRqb028Q==",
+  "dgSpecHash": "KOv5PNj0ZgN/QuWx+TW7OSVBw27ac/sir8KoWnS64+5JLMVIjmtVcu7gb8BvAmu4HKljsxWXZZN6HnTaWobrjw==",
   "success": true,
   "projectFilePath": "C:\\Users\\amrh3\\OneDrive\\Desktop\\Univ\\Software Graduate Project I\\GraduateProject_Core\\GraduateProject_Core.csproj",
   "expectedPackageFiles": [
@@ -49,6 +49,7 @@
     "C:\\Users\\amrh3\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\amrh3\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\amrh3\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\amrh3\\.nuget\\packages\\questpdf\\2025.4.0\\questpdf.2025.4.0.nupkg.sha512",
     "C:\\Users\\amrh3\\.nuget\\packages\\system.clientmodel\\1.0.0\\system.clientmodel.1.0.0.nupkg.sha512",
     "C:\\Users\\amrh3\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\amrh3\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
