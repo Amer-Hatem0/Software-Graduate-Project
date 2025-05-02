@@ -31,7 +31,7 @@ namespace GraduateProject_API.Controllers
         public async Task<IActionResult> RequestLeave([FromBody] LeaveRequestDTO dto)
         {
             var doctorId = await GetDoctorIdFromToken();
-            dto.DoctorID = doctorId;
+            dto.DoctorId = doctorId;
 
             var result = await _doctorRepository.RequestLeaveAsync(dto);
             return result ? Ok(new { Message = "Leave request submitted." }) : BadRequest();

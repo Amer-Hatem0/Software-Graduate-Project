@@ -26,7 +26,7 @@ namespace GraduateProject_Infrastructure.Repositories
         {
             var leaveRequest = new LeaveRequest
             {
-                DoctorID = leaveRequestDto.DoctorID,
+                DoctorID = leaveRequestDto.DoctorId,
                 StartDate = leaveRequestDto.StartDate,
                 EndDate = leaveRequestDto.EndDate,
                 Reason = leaveRequestDto.Reason,
@@ -42,6 +42,7 @@ namespace GraduateProject_Infrastructure.Repositories
         public async Task<PatientFullHistoryDTO> GetPatientFullHistoryAsync(int patientId)
         {
             var patient = await _context.Patients
+
                 .Include(p => p.MedicalHistories)
                 .Include(p => p.Appointments)
                     .ThenInclude(a => a.Doctor)

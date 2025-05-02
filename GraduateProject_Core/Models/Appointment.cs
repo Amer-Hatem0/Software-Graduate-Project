@@ -24,15 +24,15 @@ namespace GraduateProject_Core.Models
         [Required]
         public int StatusID { get; set; }
 
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         public DateTime? RequestedRescheduleDate { get; set; }
-        public string RescheduleReason { get; set; }
-        public string RescheduleStatus { get; set; }
+        public string? RescheduleReason { get; set; }
+        public string? RescheduleStatus { get; set; }
         public int? WaitingMinutes { get; set; }
     }
 }
