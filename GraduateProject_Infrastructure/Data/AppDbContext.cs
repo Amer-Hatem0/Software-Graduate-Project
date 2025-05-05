@@ -31,10 +31,10 @@ namespace GraduateProject_Infrastructure.Data
 
 
 
-        public DbSet<Procedure> Procedures { get; set; } 
+        public DbSet<Procedure> Procedures { get; set; }
         public DbSet<PatientReport> PatientReports { get; set; }
         public DbSet<Users> Users { get; set; }
-  
+
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Supervisor> Supervisors { get; set; }
         public DbSet<Patient> Patients { get; set; }
@@ -107,9 +107,9 @@ namespace GraduateProject_Infrastructure.Data
                 .WithMany(s => s.DoctorSpecializations)
                 .HasForeignKey(ds => ds.SpecializationID);
 
-       
 
-            
+
+
 
 
         }

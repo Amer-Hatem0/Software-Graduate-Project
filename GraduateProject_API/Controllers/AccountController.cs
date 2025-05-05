@@ -17,13 +17,7 @@ public class AccountController : ControllerBase
         this.authRepository = authRepository;
     }
 
-    //[HttpPost("Register")]
-    //public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
-    //{
-    //    var user = new Users { UserName = dto.UserName, Email = dto.Email  };
-    //    var result = await authRepository.RegisterAsync(user, dto.Password);
-    //    return Ok(new { message = result });
-    //}
+ 
 
 
     [HttpPost("Register")]

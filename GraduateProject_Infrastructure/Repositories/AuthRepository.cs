@@ -29,23 +29,41 @@ namespace GraduateProject_Infrastructure.Repositories
             this.configuration = configuration;
             this.appDbContext = appDbContext;
         }
-        
+
         public async Task<string> RegisterAsync(Users user, string password)
         {
+          
             var result = await userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 return string.Join(",", result.Errors.Select(e => e.Description));
 
+        
             await userManager.AddToRoleAsync(user, "Patient");
 
+      
+            var createdUser = await userManager.FindByNameAsync(user.UserName);
+            if (createdUser == null)
+                return "Error: User creation failed.";
+
+    
+            Console.WriteLine($" User created with ID: {createdUser.Id}");
+
+          
             var patientEntity = new Patient
             {
-                UserId = user.Id
+                UserId = createdUser.Id,
+                CurrentStatus = "Active",
+                ComplianceLevel = "Normal",
+                DateOfBirth = createdUser.DateOfBirth ?? DateTime.UtcNow.AddYears(-30),
+                Gender = createdUser.Gender,
+                Phone = createdUser.PhoneNumber,
+                Status = new AppointmentStatus { StatusName = "Pending" }
             };
+
             appDbContext.Patients.Add(patientEntity);
             await appDbContext.SaveChangesAsync();
 
-            return "Patient registered successfully";
+            return " Patient registered successfully and added to Patients table.";
         }
 
         public async Task<string> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
@@ -60,8 +78,6 @@ namespace GraduateProject_Infrastructure.Repositories
 
             return "Password changed successfully";
         }
-
-
 
         public async Task<string> LoginAsync(string username, string password)
         {
@@ -91,29 +107,6 @@ namespace GraduateProject_Infrastructure.Repositories
             }
         }
 
-        //    private string GenerateToken(Users users)
-        //    {
-        //        var claims = new[]
-        //        {
-        //    new Claim(JwtRegisteredClaimNames.Sub, users.UserName),
-        //    new Claim(ClaimTypes.NameIdentifier, users.Id.ToString())
-        //};
-
-        //        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
-
-        //        var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        //        var token = new JwtSecurityToken(
-        //            configuration["JWT:Issuer"],
-        //            configuration["JWT:Audience"],
-        //            claims,
-        //            expires: DateTime.Now.AddMinutes(30),
-        //            signingCredentials: cred
-        //        );
-
-
-        //        return new JwtSecurityTokenHandler().WriteToken(token);
-        //    }
         private string GenerateToken(Users user)
         {
             var claims = new List<Claim>
@@ -149,6 +142,7 @@ namespace GraduateProject_Infrastructure.Repositories
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+       
         public async Task<string> SendOTPAsync(string username)
         {
             var user = await userManager.FindByNameAsync(username);

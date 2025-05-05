@@ -16,6 +16,9 @@ namespace GraduateProject_Core.Models
         public byte[] Data { get; set; }
         public string Description { get; set; }
         public DateTime UploadedAt { get; set; }
+        public int ReportID { get; set; }
+      
+
     }
 
 

@@ -12,7 +12,7 @@ namespace GraduateProject_Core.Models
     {
 
         public string FullName { get; set; }
-        public string Specialization { get; set; }
+        public string? Specialization { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }

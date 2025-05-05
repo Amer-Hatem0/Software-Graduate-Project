@@ -8,6 +8,7 @@ namespace GraduateProject_Core.DTO_s
 {
     public class MedicalHistoryItemDTO
     {
+
         public string Disease { get; set; }
         public string Treatment { get; set; }
         public string Notes { get; set; }

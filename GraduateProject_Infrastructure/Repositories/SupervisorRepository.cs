@@ -56,7 +56,7 @@ namespace GraduateProject_Infrastructure.Repositories
                 PatientID = dto.PatientId,
                 DoctorID = dto.DoctorId,
                 DateTime = DateTime.Now.AddDays(1),
-                StatusID = 1 // Scheduled
+                StatusID = 7 // Scheduled
             };
 
             _context.Appointments.Add(appointment);
