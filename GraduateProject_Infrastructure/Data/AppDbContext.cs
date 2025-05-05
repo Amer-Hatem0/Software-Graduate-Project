@@ -19,13 +19,7 @@ namespace GraduateProject_Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        //// Constructor for EF CLI migrations (design-time)
-        //public AppDbContext() : base(
-        //    new DbContextOptionsBuilder<AppDbContext>()
-        //        .UseSqlServer("Server=hospital-server.database.windows.net;Database=HospitalDB;User Id=adminuser;Password=Amer2002*;")
-        //        .Options)
-        //{
-        //}
+     
 
 
 
