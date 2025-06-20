@@ -14,7 +14,7 @@ namespace GraduateProject_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  [Authorize(Roles = "Doctor,Patient")]
+  [Authorize(Roles = "Doctor,Patient,Supervisor")]
     public class DoctorController : ControllerBase
     {
         private readonly IDoctorRepository _doctorRepository;
@@ -32,7 +32,7 @@ namespace GraduateProject_API.Controllers
             _notificationRepository = notificationRepository;
         }
 
-        [Authorize(Roles = "Doctor,Admin")]
+     
         [HttpGet("LeaveRequests/{doctorId}")]
         public async Task<IActionResult> GetLeaveRequestsByDoctor(int doctorId)
         {

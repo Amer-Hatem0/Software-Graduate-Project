@@ -122,7 +122,7 @@ namespace GraduateProject_Infrastructure.Repositories
                 PatientID = dto.PatientId,
                 DoctorID = dto.DoctorId,
                 DateTime = dto.DateTime,
-                Status = "Pending" ,
+                StatusID = 1,
                 Notes = "Booked from supervisor panel"
             };
 
