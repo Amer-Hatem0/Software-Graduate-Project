@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -58,45 +59,6 @@ namespace GraduateProject_Infrastructure.Repositories
             return "OTP sent to your email.";
         }
 
-        //public async Task<string> RegisterAsync(Users user, string password)
-        //{
-        //     user.IsVerified = false;
-
-        //    var result = await userManager.CreateAsync(user, password);
-        //    if (!result.Succeeded)
-        //        return string.Join(",", result.Errors.Select(e => e.Description));
-
-        //    var createdUser = await userManager.FindByNameAsync(user.UserName);
-        //    if (createdUser == null)
-        //        return "Error: User creation failed.";
-
-        //    bool isPatient = true;
-
-        //     if (isPatient)
-        //    {
-        //        var patientEntity = new Patient
-        //        {
-        //            UserId = createdUser.Id,
-        //            CurrentStatus = "Active",
-        //            ComplianceLevel = "Normal",
-        //            DateOfBirth = createdUser.DateOfBirth ?? DateTime.UtcNow.AddYears(-30),
-        //            Gender = createdUser.Gender,
-        //            Phone = createdUser.PhoneNumber,
-        //            Status = new AppointmentStatus { StatusName = "Pending" }
-        //        };
-
-        //        appDbContext.Patients.Add(patientEntity);
-
-        //    }
-        //    else
-        //    {
-
-        //        createdUser.IsVerified = true;
-        //    }
-
-        //    await appDbContext.SaveChangesAsync();
-        //    return "User registered successfully.";
-        //}
         public async Task<string> RegisterAsync(Users user, string password)
         {
             user.IsVerified = false;
@@ -126,8 +88,7 @@ namespace GraduateProject_Infrastructure.Repositories
 
                 appDbContext.Patients.Add(patientEntity);
 
-                // 🟢 أضف هذا السطر لإعطاء الدور للمستخدم
-                await userManager.AddToRoleAsync(createdUser, "Patient");
+                 await userManager.AddToRoleAsync(createdUser, "Patient");
             }
             else
             {
@@ -162,28 +123,30 @@ namespace GraduateProject_Infrastructure.Repositories
                 return $"ERROR: {ex.Message}";
             }
         }
-
         private string GenerateToken(Users user)
         {
             var claims = new List<Claim>
     {
-         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim("userid", user.Id.ToString()), 
+        new Claim("userid", user.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email)
-       
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+    };
 
-        };
-
-          
             var roles = userManager.GetRolesAsync(user).Result;
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
                 claims.Add(new Claim("role", role));
+            }
 
+            // ✅ إضافة التخصص إذا كان المستخدم طبيبًا
+            var doctor = appDbContext.Doctors.FirstOrDefault(d => d.UserId == user.Id);
+            if (doctor != null && !string.IsNullOrEmpty(doctor.Specialization))
+            {
+                claims.Add(new Claim("specialization", doctor.Specialization));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -201,8 +164,48 @@ namespace GraduateProject_Infrastructure.Repositories
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-       
-       public async Task<string> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
+
+        //    private string GenerateToken(Users user)
+        //    {
+        //        var claims = new List<Claim>
+        //{
+        //     new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //    new Claim("userid", user.Id.ToString()), 
+        //    new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+        //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+
+
+
+        //    };
+
+
+        //        var roles = userManager.GetRolesAsync(user).Result;
+        //        foreach (var role in roles)
+        //        {
+        //            claims.Add(new Claim(ClaimTypes.Role, role));
+        //            claims.Add(new Claim("role", role));
+
+        //        }
+
+        //        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+        //            configuration["JWT:Key"] ?? throw new InvalidOperationException("JWT Key is missing")));
+
+        //        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        //        var token = new JwtSecurityToken(
+        //            issuer: configuration["JWT:Issuer"],
+        //            audience: configuration["JWT:Audience"],
+        //            claims: claims,
+        //            expires: DateTime.UtcNow.AddHours(1),
+        //            signingCredentials: creds
+        //        );
+
+        //        return new JwtSecurityTokenHandler().WriteToken(token);
+        //    }
+
+        public async Task<string> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
         {
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)

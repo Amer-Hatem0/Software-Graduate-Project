@@ -13,7 +13,7 @@ namespace GraduateProject_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   [Authorize(Roles = "Supervisor")]
+   //[Authorize(Roles = "Supervisor")]
     public class SupervisorController : ControllerBase
     {
 

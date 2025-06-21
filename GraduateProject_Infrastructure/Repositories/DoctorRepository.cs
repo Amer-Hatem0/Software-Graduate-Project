@@ -337,7 +337,9 @@ namespace GraduateProject_Infrastructure.Repositories
                     PatientID = dto.PatientId,
                     FileName = dto.ReportFile.FileName,
                     FileUrl = $"/uploads/{fileName}",
-                    UploadedAt = DateTime.UtcNow
+                    UploadedAt = DateTime.UtcNow,
+                    Description = dto.Description,
+                    Specialization = dto.Specialization  
                 };
 
                 _context.ReportFiles.Add(fileRecord);

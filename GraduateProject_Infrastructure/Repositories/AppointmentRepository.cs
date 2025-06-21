@@ -102,8 +102,11 @@ namespace GraduateProject_Infrastructure.Repositories
             if (appointment == null)
                 return false;
 
-            _context.Appointments.Remove(appointment);
+             appointment.StatusID = 4; // 4 = Canceled  
+            _context.Appointments.Update(appointment);
+
             return await _context.SaveChangesAsync() > 0;
         }
+
     }
 }

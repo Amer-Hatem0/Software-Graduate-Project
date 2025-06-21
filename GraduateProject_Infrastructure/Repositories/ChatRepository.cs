@@ -41,11 +41,20 @@ namespace GraduateProject_Infrastructure.Repositories
 
         public async Task<Dictionary<int, int>> GetUnreadCountsGroupedBySenderAsync(int doctorId)
         {
+            var userId = await _context.Doctors
+                .Where(d => d.DoctorID == doctorId)
+                .Select(d => d.UserId)
+                .FirstOrDefaultAsync();
+
+            if (userId == 0)
+                return new Dictionary<int, int>();
+
             return await _context.Messages
-                .Where(m => m.ReceiverUserID == doctorId && !m.IsRead)
+                .Where(m => m.ReceiverUserID == userId && !m.IsRead)
                 .GroupBy(m => m.SenderUserID)
                 .ToDictionaryAsync(g => g.Key, g => g.Count());
         }
+
 
         public async Task<bool> MarkAllMessagesFromSenderAsReadAsync(int senderId, int receiverId)
         {

@@ -11,6 +11,8 @@ namespace GraduateProject_Core.DTO_s
     {
         public int PatientId { get; set; }
         public IFormFile ReportFile { get; set; }
+        public string? Specialization { get; set; }
+        public string? Description { get; set; }
     }
 
 }
