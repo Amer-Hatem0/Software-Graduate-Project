@@ -37,7 +37,7 @@ public class AccountController : ControllerBase
 
         var result = await authRepository.RegisterAsync(user, dto.Password);
 
-        // ✅ أضف هذا السطر لإرسال الكود بعد التسجيل مباشرة:
+      
         if (result.Contains("successfully"))
             await authRepository.SendOTPAsync(user.Email);
 

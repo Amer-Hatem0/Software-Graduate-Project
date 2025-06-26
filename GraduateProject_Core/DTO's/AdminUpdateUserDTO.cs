@@ -14,7 +14,8 @@ namespace GraduateProject_Core.DTO_s
         public string Gender { get; set; }
         public int Age { get; set; }
         public string Role { get; set; }
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
+        public string? Specialization { get; set; }
     }
 
 }

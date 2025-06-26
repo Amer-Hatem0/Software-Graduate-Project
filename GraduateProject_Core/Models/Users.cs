@@ -13,12 +13,12 @@ namespace GraduateProject_Core.Models
 
         public string FullName { get; set; }
         public string? Specialization { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Age { get; set; }
         public bool IsVerified { get; set; } = false;
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
         public Patient Patient { get; set; }
         public Doctor Doctor { get; set; }
         public Supervisor Supervisor { get; set; }

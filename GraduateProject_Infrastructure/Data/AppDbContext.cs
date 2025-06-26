@@ -114,6 +114,11 @@ namespace GraduateProject_Infrastructure.Data
                 .WithMany(s => s.DoctorSpecializations)
                 .HasForeignKey(ds => ds.SpecializationID);
 
+            modelBuilder.Entity<OTPVerification>()
+    .HasOne(o => o.User)
+    .WithMany(u => u.OTPVerifications)
+    .HasForeignKey(o => o.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
 
 
 

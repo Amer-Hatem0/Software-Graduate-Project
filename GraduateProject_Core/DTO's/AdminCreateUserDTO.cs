@@ -17,6 +17,6 @@ namespace GraduateProject_Core.DTO_s
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int Age { get; set; }
-        public string Specialization { get; set; }
+        public string? Specialization { get; set; }
     }
 }

@@ -102,47 +102,7 @@ public class AdminController : ControllerBase
         return Ok($"{dto.Role} account created successfully.");
     }
 
-    //public async Task<IActionResult> CreateUser([FromBody] AdminCreateUserDTO dto)
-    //{
-    //    if (!new[] { "Doctor", "Supervisor", "Admin" }.Contains(dto.Role))
-    //        return BadRequest("Invalid role.");
-
-    //    var user = new Users
-    //    {
-    //        UserName = dto.UserName,
-    //        Email = dto.Email,
-    //        FullName = dto.FullName,
-    //        PhoneNumber = dto.PhoneNumber,
-    //        Gender = dto.Gender,
-    //        DateOfBirth = dto.DateOfBirth,
-    //        Age = dto.Age,
-    //        Specialization = dto.Specialization
-
-    //    };
-
-    //    var result = await _userManager.CreateAsync(user, dto.Password);
-    //    if (!result.Succeeded)
-    //        return BadRequest(result.Errors);
-
-    //    await _userManager.AddToRoleAsync(user, dto.Role);
-
-    //    if (dto.Role == "Doctor")
-    //    {
-    //        _context.Doctors.Add(new Doctor { UserId = user.Id });
-    //    }
-    //    else if (dto.Role == "Supervisor")
-    //    {
-    //        _context.Supervisors.Add(new Supervisor { UserId = user.Id });
-    //    }
-    //    else if (dto.Role == "Admin")
-    //    {
-    //        _context.Admins.Add(new Admin { UserId = user.Id });
-    //    }
-
-    //    await _context.SaveChangesAsync();
-    //    return Ok($"{dto.Role} account created successfully.");
-    //}
-
+   
 
     [HttpGet("GetAllUsers")]
     public async Task<IActionResult> GetAllUsers()

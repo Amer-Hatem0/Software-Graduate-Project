@@ -30,6 +30,8 @@ namespace GraduateProject_Infrastructure.Repositories
                     email = u.Email,
                     gender = u.Gender,
                     age = u.Age,
+                  
+
                     phone = u.PhoneNumber,
                     Roles = _context.UserRoles
                         .Where(ur => ur.UserId == u.Id)
@@ -50,6 +52,7 @@ namespace GraduateProject_Infrastructure.Repositories
                 email = u.Email,
                 gender = u.Gender,
                 DateOfBirth = u.DateOfBirth,
+                Specialization = u.Specialization,
                 age = u.Age,
                 phone = u.PhoneNumber,
                 ProfileImage = u.ProfileImage,  
@@ -154,17 +157,7 @@ namespace GraduateProject_Infrastructure.Repositories
                                  .ToListAsync();
         }
 
-        //public async Task<bool> ApproveLeaveRequestAsync(int leaveRequestId)
-        //{
-        //    var leaveRequest = await _context.LeaveRequests.FindAsync(leaveRequestId);
-        //    if (leaveRequest == null)
-        //        return false;
-
-        //    leaveRequest.StatusID = 1;  
-
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
+       
 
         public async Task<bool> ApproveLeaveRequestAsync(int leaveRequestId)
         {
@@ -176,10 +169,8 @@ namespace GraduateProject_Infrastructure.Repositories
             if (leaveRequest == null)
                 return false;
 
-            // تعيين الحالة "Approved"
-            leaveRequest.StatusID = (await _context.LeaveStatuses.FirstOrDefaultAsync(s => s.StatusName == "Approved"))?.StatusID ?? 1;
+             leaveRequest.StatusID = (await _context.LeaveStatuses.FirstOrDefaultAsync(s => s.StatusName == "Approved"))?.StatusID ?? 1;
 
-            // جلب كل المواعيد التي ضمن فترة الإجازة والتي لم تُلغ بعد
             var canceledStatusId = (await _context.AppointmentStatuses.FirstOrDefaultAsync(s => s.StatusName == "Canceled"))?.StatusID ?? 4;
 
             var affectedAppointments = await _context.Appointments
@@ -279,6 +270,10 @@ namespace GraduateProject_Infrastructure.Repositories
             if (!string.IsNullOrEmpty(dto.ProfileImage))
             {
                 user.ProfileImage = dto.ProfileImage;
+            }
+            if (!string.IsNullOrEmpty(dto.Specialization))
+            {
+                user.Specialization = dto.Specialization;
             }
 
             var oldRoles = await _userManager.GetRolesAsync(user);

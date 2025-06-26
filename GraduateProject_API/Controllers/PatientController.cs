@@ -47,6 +47,13 @@ namespace GraduateProject_API.Controllers
 
             return Ok(doctors);
         }
+        [HttpGet("ProfileByUserId/{userId}")]
+        public async Task<IActionResult> GetProfileByUserId(int userId)
+        {
+            var profile = await _patientRepository.GetPatientProfileAsync(userId);
+            if (profile == null) return NotFound();
+            return Ok(profile);
+        }
 
 
         [HttpGet("Profile/{patientId}")]

@@ -16,6 +16,8 @@ namespace GraduateProject_Core.DTO_s
         public string phone { get; set; }
         public List<string> Roles { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
+        public string? Specialization { get; set; }
+
     }
 }
